@@ -28,7 +28,7 @@ from langchain_community.document_loaders import PDFMinerLoader
 from langchain.text_splitter import CharacterTextSplitter, TokenTextSplitter
 import os
 
-pdf_path = "./modern_history_spectrum.pdf"
+pdf_path = "./history.pdf"
 
 loader = PDFMinerLoader(pdf_path)
 pdf_content = loader.load()
@@ -36,7 +36,7 @@ pdf_content = loader.load()
 #print(type(pdf_content), pdf_content[0])
 
 
-CHUNK_SIZE = 1000
+CHUNK_SIZE = 1000000
 CHUNK_OVERLAP = 30
 
 text_splitter = CharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap = CHUNK_OVERLAP)
@@ -77,7 +77,7 @@ qdrant = Qdrant.from_documents(
 )
 
 print("finding relevant docs from qdrant, for given query")
-query = "was partition of bengal cancelled ?"
+query = "whT IS 'SAFETY VALVE' THEORY in context of indian history?"
 found_docs = qdrant.similarity_search(query)
 
 print("count of relevant docs found = > ",len(found_docs))
@@ -92,8 +92,9 @@ for doc_ in found_docs:
 from langchain.chains.question_answering import load_qa_chain
 from langchain_ollama.llms import OllamaLLM
 
+llm = OllamaLLM(model="llama3.2")
 
-chain = load_qa_chain(OllamaLLM, chain_type="stuff")
+chain = load_qa_chain(llm, chain_type="stuff")
 found_docs_2 = qdrant.similarity_search(query)
 
 
