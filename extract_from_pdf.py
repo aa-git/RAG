@@ -92,8 +92,9 @@ for doc_ in found_docs:
 from langchain.chains.question_answering import load_qa_chain
 from langchain_ollama.llms import OllamaLLM
 
+llm = OllamaLLM(model='llama3.2')
 
-chain = load_qa_chain(OllamaLLM, chain_type="stuff")
+chain = load_qa_chain(llm, chain_type="stuff")
 found_docs_2 = qdrant.similarity_search(query)
 
 
