@@ -8,6 +8,7 @@ from uuid import uuid4
 ####  Controlling Variables
 RECONSTRUCT_VECTOR_STORE = True
 content_path = "content.txt"
+content2_path = "content2.txt"
 
 
 loader = TextLoader(content_path)
@@ -24,12 +25,20 @@ docs = text_splitter.split_documents(content)
 print("------> total docs count created out of pdf file: ",len(docs))
 
 # qdrant work starts
+print("real work starts here")
 
 document_1 = Document(
     page_content=open(content_path,"r").read(),
     metadata={"source" : "txt file"}
 )
 doc_1_uuid = str(uuid4())
+
+document_2 = Document(
+    page_content=open(content2_path,"r").read(),
+    metadata={"source" : "txt 2 file"}
+)
+doc_2_uuid = str(uuid4())
+
 
 from langchain_community.vectorstores import Qdrant
 from langchain_ollama import OllamaEmbeddings
@@ -57,11 +66,24 @@ vector_store = QdrantVectorStore(
 )
 
 vector_store.add_documents(
-    documents=[document_1],
-    ids = [ doc_1_uuid ]
+    documents=[document_1, document_2],
+    ids = [ doc_1_uuid , doc_2_uuid]
 )
 
-print("done ========================")
+print("done: doc inserted in qdrant(in memory)")
+
+results = vector_store.similarity_search("tell me about sunday", k=1)
+
+for res in results:
+    print(res.page_content, res.metadata)
+
+
+
+
+
+while True:
+    input()
+
 
 if RECONSTRUCT_VECTOR_STORE: 
     Qdrant.from_documents()
