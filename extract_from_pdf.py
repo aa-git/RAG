@@ -1,3 +1,4 @@
+RECONSTRUCT_VECTOR_STORE = True
 '''
 from PyPDF2 import PdfReader
 
@@ -68,13 +69,24 @@ embeddings = OllamaEmbeddings(
 
 print("creating embeddings, and saving in qdrant")
 
-qdrant = Qdrant.from_documents(
-    docs, 
-    embeddings,
-    path = "./tmp/local_qdrant",
-    collection_name="my_documents",
-    force_recreate=True
-)
+
+
+
+if RECONSTRUCT_VECTOR_STORE: 
+    qdrant = Qdrant.from_documents(
+        docs, 
+        embeddings,
+        path = "./tmp/local_qdrant",
+        collection_name="my_documents",
+        force_recreate=True
+    )
+else:
+    Qdrant.construct_instance(path="./tmp/local_qdrant", collection_name="my_documents")
+
+print("exiting"
+      )
+import sys
+sys.exit()
 
 print("finding relevant docs from qdrant, for given query")
 query = "was partition of bengal cancelled ?"
