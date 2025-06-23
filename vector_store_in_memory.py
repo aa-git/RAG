@@ -7,39 +7,17 @@ from uuid import uuid4
 
 ####  Controlling Variables
 RECONSTRUCT_VECTOR_STORE = True
-content_path = "content.txt"
-content2_path = "content2.txt"
 
+import wikipedia_extract
 
-loader = TextLoader(content_path)
-content = loader.load()
+content = wikipedia_extract.get_content()
 
-CHUNK_SIZE = 1000
-CHUNK_OVERLAP = 30
-
-text_splitter = CharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap = CHUNK_OVERLAP)
-docs = text_splitter.split_documents(content)
-
-
-
-print("------> total docs count created out of pdf file: ",len(docs))
-
-# qdrant work starts
-print("real work starts here")
-
-document_1 = Document(
-    page_content=open(content_path,"r").read(),
-    metadata={"source" : "txt file"}
-)
-doc_1_uuid = str(uuid4())
-
-document_2 = Document(
-    page_content=open(content2_path,"r").read(),
-    metadata={"source" : "txt 2 file"}
-)
-doc_2_uuid = str(uuid4())
-
-
+documents = []
+ids = []
+for piece in content:
+    documents += [Document(page_content=piece, metadata={"source" : "txt file"})]
+    ids += [str(uuid4())]
+    
 from langchain_community.vectorstores import Qdrant
 from langchain_ollama import OllamaEmbeddings
 from langchain_qdrant import QdrantVectorStore
@@ -66,13 +44,13 @@ vector_store = QdrantVectorStore(
 )
 
 vector_store.add_documents(
-    documents=[document_1, document_2],
-    ids = [ doc_1_uuid , doc_2_uuid]
+    documents=documents,
+    ids = ids
 )
 
 print("done: doc inserted in qdrant(in memory)")
 
-results = vector_store.similarity_search("tell me about sunday", k=1)
+results = vector_store.similarity_search("Tell me about earth", k=2)
 
 for res in results:
     print(res.page_content, res.metadata)
