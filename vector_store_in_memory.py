@@ -50,59 +50,20 @@ vector_store.add_documents(
 
 print("done: doc inserted in qdrant(in memory)")
 
-results = vector_store.similarity_search("Tell me about earth", k=2)
+query = "which part of earth receives maximum solar radiation?"
+results = vector_store.similarity_search(query, k=4)
 
+# qdrant results
+
+'''
 for res in results:
     print(res.page_content, res.metadata)
-
-
-
-
-
-while True:
-    input()
-
-
-if RECONSTRUCT_VECTOR_STORE: 
-    Qdrant.from_documents()
-    qdrant = Qdrant.from_documents(
-        docs, 
-        embeddings,
-        path = "./tmp/local_qdrant",
-        collection_name="my_documents",
-        force_recreate=True
-    )
-else:
-    Qdrant.construct_instance(path="./tmp/local_qdrant", collection_name="my_documents")
-
-print("exiting"
-      )
-import sys
-sys.exit()
-
-print("finding relevant docs from qdrant, for given query")
-query = "was partition of bengal cancelled ?"
-found_docs = qdrant.similarity_search(query)
-
-print("count of relevant docs found = > ",len(found_docs))
-for doc_ in found_docs:
-    print(doc_.page_content)
-    print("------------------------------------------")
-    print("------------------------------------------")
-
-
-
+'''
 ### generation part
 from langchain.chains.question_answering import load_qa_chain
 from langchain_ollama.llms import OllamaLLM
 
 llm = OllamaLLM(model='llama3.2')
-
 chain = load_qa_chain(llm, chain_type="stuff")
-found_docs_2 = qdrant.similarity_search(query)
-
-
-answer = chain.run(input_documents = found_docs_2, question=query)
-
+answer = chain.run(input_documents = results, question=query)
 print(answer)
-
