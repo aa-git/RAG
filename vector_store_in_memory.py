@@ -53,17 +53,22 @@ print("done: doc inserted in qdrant(in memory)")
 query = "how many years before present did the common ancestor of all present life forms arose on earth?"
 results = vector_store.similarity_search(query, k=4)
 
-# qdrant results
-
 '''
 for res in results:
     print(res.page_content, res.metadata)
 '''
+
 ### generation part
 from langchain.chains.question_answering import load_qa_chain
 from langchain_ollama.llms import OllamaLLM
 
 llm = OllamaLLM(model='llama3.2')
 chain = load_qa_chain(llm, chain_type="stuff")
-answer = chain.run(input_documents = results, question=query)
-print(answer)
+
+
+while True:
+    query = input("\n\n\n\n\n\n\nquery: ")
+    results = vector_store.similarity_search(query, k=4)
+    
+    answer = chain.run(input_documents = results, question=query)
+    print(answer)
