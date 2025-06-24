@@ -21,7 +21,7 @@ def get_content():
 
 
     #return str(x.content).encode('utf-8')
-    return [content_1, content_2, content_3, content_4]
+    return [content_0, content_1, content_2, content_3, content_4, content_5, content_6]
     
 
 
