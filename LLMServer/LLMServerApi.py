@@ -10,7 +10,7 @@ def server_health_check():
 
 @app.get("/query/{query}")
 def query(query: str):
-    from LLMPlayGround import wikipedia_extract
+    from LLMPlayGround import wikipedia_extract 
     content = wikipedia_extract.get_content()
     vector_store = vector_store_in_memory.put_in_qdrant_vector_store(content)
     answer = generation_llama_3_2.generate_response_to_query(query, vector_store)

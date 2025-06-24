@@ -50,6 +50,8 @@ vector_store.add_documents(
 
 print("done: doc inserted in qdrant(in memory)")
 
+query = "how many years before present did the common ancestor of all present life forms arose on earth?"
+results = vector_store.similarity_search(query, k=4)
 
 '''
 for res in results:
